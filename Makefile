@@ -15,5 +15,5 @@ compile:
 
 genast:
 	@echo "--> Generating AST Tree"
-	@javac com\harishlangs\tool\\*.java
-	@java $(PACKAGE)tool.GenerateAst $(SRC)
+	@javac com\harishlangs\tools\\*.java
+	@java $(PACKAGE)tools.GenAst $(SRC)
