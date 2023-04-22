@@ -42,4 +42,8 @@ class Environment {
     void define(String name, Object value) {
         values.put(name, value);
     }
+
+    void importMod(Map<String, Object> mod) {
+        values.putAll(mod);
+    }
 }

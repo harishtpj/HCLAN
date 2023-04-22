@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.harishlangs.hcl.Stmt.Expression;
-
 class Parser {
     private static class ParseError extends RuntimeException {}
 
@@ -27,10 +25,12 @@ class Parser {
     }
 
     private Stmt statement() {
+      if (match(TokenType.FUN)) return function("function");
       if (match(TokenType.BREAK)) return breakStatement();
       if (match(TokenType.IF)) return ifStatement();
       if (match(TokenType.PRINT)) return printStatement();
       if (match(TokenType.PRINTLN)) return printLnStatement();
+      if (match(TokenType.RETURN)) return returnStatement();
       if (match(TokenType.LOOP)) return loopStatement();
       if (match(TokenType.WHILE)) return whileStatement();
       if (match(TokenType.FOR)) return forStatement();
@@ -71,6 +71,17 @@ class Parser {
       Stmt print = new Stmt.Print(value);
       Stmt newline = new Stmt.Print(new Expr.Literal("\n"));
       return new Stmt.Block(Arrays.asList(print, newline));
+    }
+
+    private Stmt returnStatement() {
+      Token keyword = previous();
+      Expr value = null;
+      if (!check(TokenType.SEMICOLON)) {
+        value = expression();
+      }
+  
+      consume(TokenType.SEMICOLON, "Expect ';' after return value.");
+      return new Stmt.Return(keyword, value);
     }
 
     private Stmt varDeclaration() {
@@ -150,6 +161,23 @@ class Parser {
       Expr expr = expression();
       consume(TokenType.SEMICOLON, "Expect ';' after expression.");
       return new Stmt.Expression(expr);
+    }
+
+    private Stmt.Function function(String kind) {
+      Token name = consume(TokenType.IDENTIFIER, "Expect " + kind + " name.");
+      consume(TokenType.LEFT_PAREN, "Expect '(' after " + kind + " name.");
+      List<Token> parameters = new ArrayList<>();
+      if (!check(TokenType.RIGHT_PAREN)) {
+        do {
+          parameters.add(
+              consume(TokenType.IDENTIFIER, "Expect parameter name."));
+        } while (match(TokenType.COMMA));
+      }
+      consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.");
+
+      consume(TokenType.LEFT_BRACE, "Expect '{' before " + kind + " body.");
+      List<Stmt> body = block();
+      return new Stmt.Function(name, parameters, body);
     }
 
     private List<Stmt> block() {
@@ -274,7 +302,32 @@ class Parser {
           return new Expr.Unary(operator, right);
         }
     
-        return primary();
+        return call();
+    }
+
+    private Expr call() {
+      Expr expr = primary();
+  
+      while (true) { 
+        if (match(TokenType.LEFT_PAREN)) {
+          expr = finishCall(expr);
+        } else break;
+      }
+  
+      return expr;
+    }
+
+    private Expr finishCall(Expr callee) {
+      List<Expr> arguments = new ArrayList<>();
+      if (!check(TokenType.RIGHT_PAREN)) {
+        do {
+          arguments.add(expression());
+        } while (match(TokenType.COMMA));
+      }
+  
+      Token paren = consume(TokenType.RIGHT_PAREN,"Expect ')' after arguments.");
+  
+      return new Expr.Call(callee, paren, arguments);
     }
 
     private Expr primary() {
