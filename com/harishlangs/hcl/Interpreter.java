@@ -3,6 +3,8 @@ package com.harishlangs.hcl;
 import java.util.List;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+    private static class BreakException extends RuntimeException {}
+
     private Environment environment = new Environment();
 
     void interpret(List<Stmt> statements) {
@@ -155,6 +157,23 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
       environment.define(stmt.name.lexeme, value);
       return null;
+    }
+
+    @Override
+    public Void visitLoopStmt(Stmt.Loop stmt) {
+      try {
+        while(true) {
+          execute(stmt.body);
+        }
+      } catch (BreakException ex) {
+        // Breaks Loop
+      }
+      return null;
+    }
+
+    @Override
+    public Void visitBreakStmt(Stmt.Break stmt) {
+      throw new BreakException();
     }
 
     @Override
