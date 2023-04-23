@@ -3,7 +3,7 @@
 let a := num(input("Enter no 1: "));
 let b := num(input("Enter no 2: "));
 
-println "a + b = " + (a + b);
-println "a - b = " + (a - b);
-println "a * b = " + (a * b);
-println "a / b = " + (a / b);
+println fmt("%d + %d = %d", a, b, a + b);
+println fmt("%d - %d = %d", a, b, a - b);
+println fmt("%d * %d = %d", a, b, a * b);
+println fmt("%d / %d = %f", a, b, a / b);

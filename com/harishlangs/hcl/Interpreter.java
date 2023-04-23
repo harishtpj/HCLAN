@@ -8,7 +8,7 @@ import com.harishlangs.hcl.std.*;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private static class BreakException extends RuntimeException {}
-    public static Scanner stdin = new Scanner(System.in);
+    public Scanner stdin = new Scanner(System.in);
 
     final Environment globals = new Environment();
     private Environment environment = globals;
@@ -102,6 +102,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
     
         return object.toString();
+    }
+
+    public Object convertNative(Object object) {
+      if (object instanceof Double) {
+        String text = object.toString();
+        if (text.endsWith(".0")) {
+          text = text.substring(0, text.length() - 2);
+          return Integer.parseInt(text);
+        }
+      }
+      return object;
     }
 
     @Override
@@ -290,7 +301,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       }
 
       HclCallable function = (HclCallable)callee;
-      if (arguments.size() != function.arity()) {
+      if ((arguments.size() != function.arity()) && !function.isVaArg()) {
         throw new RuntimeError(expr.paren, "Expected " +
             function.arity() + " arguments but got " +
             arguments.size() + ".");

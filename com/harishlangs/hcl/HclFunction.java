@@ -34,6 +34,11 @@ class HclFunction implements HclCallable {
     }
 
     @Override
+    public boolean isVaArg() {
+        return false; //TODO: support multiple arguments
+    }
+
+    @Override
     public String toString() {
         return "<fun " + declaration.name.lexeme + ">";
     }
