@@ -17,3 +17,8 @@ genast:
 	@echo "--> Generating AST Tree"
 	@javac com\harishlangs\tools\\*.java
 	@java $(PACKAGE)tools.GenAst $(SRC)
+
+clean:
+	@echo "--> Cleaning Directory"
+	@del /s /q *.class
+	@echo "--> Cleaned Directory"

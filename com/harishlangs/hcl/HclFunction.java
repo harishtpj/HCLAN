@@ -18,7 +18,7 @@ class HclFunction implements HclCallable {
         Environment environment = new Environment(closure);
         environment.define("self", instance);
         return new HclFunction(declaration, environment, isInitializer);
-      }
+    }
 
     @Override
     public Object call(Interpreter interpreter, List<Object> arguments) {
