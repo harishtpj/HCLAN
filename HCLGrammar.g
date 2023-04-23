@@ -24,7 +24,9 @@ statement       : exprStmt
                 | block ;
 
 exprStmt        : expression ';' ;
-forStmt         : 'for' IDENTIFIER ':=' expression 'to' expression 'by' expression statement ;
+forStmt         : 'for' '(' ( varDecl | exprStmt | ';' )
+                           expression? ';'
+                           expression? ')' statement ;
 ifStmt          : 'if'  expression statement ( 'else' statement )? ;
 loopStmt        : 'loop' statement ;
 printStmt       : 'print' expression ';' ;
@@ -46,7 +48,7 @@ logic_and       : equality ( 'and' equality )* ;
 equality        : comparison ( ( '!=' | '=' ) comparison )* ;
 comparison      : term ( ( '>' | '>=' | '<' | '<=' ) term )* ;
 term            : factor ( ( '-' | '+' ) factor )* ;
-factor          : unary ( ( '/' | '*' ) unary )* ;
+factor          : unary ( ( '^' | '/' | '*' ) unary )* ;
 
 unary           : ( '!' | '-' ) unary | call ;
 call            : primary ( '(' arguments? ')' | '.' IDENTIFIER )* ;

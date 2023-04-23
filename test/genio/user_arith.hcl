@@ -7,3 +7,4 @@ println fmt("%d + %d = %d", a, b, a + b);
 println fmt("%d - %d = %d", a, b, a - b);
 println fmt("%d * %d = %d", a, b, a * b);
 println fmt("%d / %d = %s", a, b, a / b);
+println fmt("%d ^ %d = %s", a, b, a ^ b);

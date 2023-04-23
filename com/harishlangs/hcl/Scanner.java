@@ -66,6 +66,7 @@ class Scanner {
             case '+': addToken(TokenType.PLUS); break;
             case ';': addToken(TokenType.SEMICOLON); break;
             case '*': addToken(TokenType.STAR); break;
+            case '^': addToken(TokenType.CARET); break;
             case '=': addToken(TokenType.EQUAL); break;
             case '/': addToken(TokenType.SLASH); break;
 

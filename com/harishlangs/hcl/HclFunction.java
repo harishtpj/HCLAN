@@ -6,10 +6,19 @@ class HclFunction implements HclCallable {
     private final Stmt.Function declaration;
     private final Environment closure;
 
-    HclFunction(Stmt.Function declaration, Environment closure) {
+    private final boolean isInitializer;
+
+    HclFunction(Stmt.Function declaration, Environment closure, boolean isInitializer) {
+        this.isInitializer = isInitializer;
         this.closure = closure;
         this.declaration = declaration;
     }
+
+    HclFunction bind(HclInstance instance) {
+        Environment environment = new Environment(closure);
+        environment.define("self", instance);
+        return new HclFunction(declaration, environment, isInitializer);
+      }
 
     @Override
     public Object call(Interpreter interpreter, List<Object> arguments) {
@@ -22,9 +31,11 @@ class HclFunction implements HclCallable {
         try {
             interpreter.executeBlock(declaration.body, environment);
         } catch (Return returnValue) {
+            if (isInitializer) return closure.getAt(0, "self");
             return returnValue.value;
         }
 
+        if (isInitializer) return closure.getAt(0, "self");
         return null;
     }
 

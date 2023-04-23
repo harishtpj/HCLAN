@@ -51,6 +51,24 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitSetExpr(Expr.Set expr) {
+      Object object = evaluate(expr.object);
+
+      if (!(object instanceof HclInstance)) { 
+        throw new RuntimeError(expr.name,"Only instances have fields.");
+      }
+
+      Object value = evaluate(expr.value);
+      ((HclInstance)object).set(expr.name, value);
+      return value;
+    }
+
+    @Override
+    public Object visitSelfExpr(Expr.Self expr) {
+      return lookUpVariable(expr.keyword, expr);
+    }
+
+    @Override
     public Object visitUnaryExpr(Expr.Unary expr) {
         Object right = evaluate(expr.right);
 
@@ -165,6 +183,21 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitClassStmt(Stmt.Class stmt) {
+      environment.define(stmt.name.lexeme, null);
+
+      Map<String, HclFunction> methods = new HashMap<>();
+      for (Stmt.Function method : stmt.methods) {
+        HclFunction function = new HclFunction(method, environment, method.name.lexeme.equals("_init"));
+        methods.put(method.name.lexeme, function);
+      }
+
+      HclClass klass = new HclClass(stmt.name.lexeme, methods);
+      environment.assign(stmt.name, klass);
+      return null;
+    }
+
+    @Override
     public Void visitExpressionStmt(Stmt.Expression stmt) {
       evaluate(stmt.expression);
       return null;
@@ -172,7 +205,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
-      HclFunction function = new HclFunction(stmt, environment);
+      HclFunction function = new HclFunction(stmt, environment, false);
       environment.define(stmt.name.lexeme, function);
       return null;
     }
@@ -302,6 +335,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             }
 
             throw new RuntimeError(expr.operator,"Operands must be two numbers or any one can be strings.");
+        
+        case CARET:
+          checkNumberOperands(expr.operator, left, right);
+          return Math.pow((double)left, (double)right);
 
         case BANG_EQUAL: return !isEqual(left, right);
         case EQUAL: return isEqual(left, right);
@@ -332,6 +369,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       }
 
       return function.call(this, arguments);
+    }
+
+    @Override
+    public Object visitGetExpr(Expr.Get expr) {
+      Object object = evaluate(expr.object);
+      if (object instanceof HclInstance) {
+        return ((HclInstance) object).get(expr.name);
+      }
+
+      throw new RuntimeError(expr.name,
+          "Only instances have properties.");
     }
 
 }
