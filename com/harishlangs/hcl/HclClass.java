@@ -5,10 +5,12 @@ import java.util.Map;
 
 class HclClass extends HclInstance implements HclCallable {
     final String name;
+    final HclClass superclass;
     private final Map<String, HclFunction> methods;
 
-    HclClass(HclClass metaclass, String name, Map<String, HclFunction> methods) {
+    HclClass(HclClass metaclass, String name, HclClass superclass, Map<String, HclFunction> methods) {
       super(metaclass);
+      this.superclass = superclass;
       this.name = name;
       this.methods = methods;
     }
@@ -16,6 +18,10 @@ class HclClass extends HclInstance implements HclCallable {
     HclFunction findMethod(String name) {
       if (methods.containsKey(name)) {
         return methods.get(name);
+      }
+
+      if (superclass != null) {
+        return superclass.findMethod(name);
       }
   
       return null;

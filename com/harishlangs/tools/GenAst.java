@@ -21,6 +21,7 @@ public class GenAst {
             "Literal  : Object value",
             "Logical  : Expr left, Token operator, Expr right",
             "Set      : Expr object, Token name, Expr value",
+            "Super    : Token keyword, Token method",
             "Self     : Token keyword",
             "Unary    : Token operator, Expr right",
             "Variable : Token name"
@@ -29,7 +30,7 @@ public class GenAst {
         defineAst(outputDir, "Stmt", Arrays.asList(
             "Block      : List<Stmt> statements",
             "Break      : ",
-            "Class      : Token name, List<Stmt.Function> methods, List<Stmt.Function> classMethods",
+            "Class      : Token name, Expr.Variable superclass, List<Stmt.Function> methods, List<Stmt.Function> classMethods",
             "Expression : Expr expression",
             "Function   : Token name, List<Token> params," +
                   " List<Stmt> body",

@@ -4,7 +4,7 @@ class Doughnut {
   }
 }
 
-class BostonCream < Doughnut {
+class BostonCream : Doughnut {
   cook() {
     super.cook();
     println "Pipe full of custard and coat with chocolate.";
