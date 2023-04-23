@@ -6,4 +6,4 @@ let b := num(input("Enter no 2: "));
 println fmt("%d + %d = %d", a, b, a + b);
 println fmt("%d - %d = %d", a, b, a - b);
 println fmt("%d * %d = %d", a, b, a * b);
-println fmt("%d / %d = %f", a, b, a / b);
+println fmt("%d / %d = %s", a, b, a / b);
