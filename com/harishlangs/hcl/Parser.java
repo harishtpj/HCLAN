@@ -254,16 +254,19 @@ class Parser {
 
     private Stmt classDeclaration() {
       Token name = consume(TokenType.IDENTIFIER, "Expect class name.");
-      consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
-  
+    
       List<Stmt.Function> methods = new ArrayList<>();
+      List<Stmt.Function> classMethods = new ArrayList<>();
+      consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
+    
       while (!check(TokenType.RIGHT_BRACE) && !isAtEnd()) {
-        methods.add(function("method"));
+        boolean isClassMethod = match(TokenType.CLASS);
+        (isClassMethod ? classMethods : methods).add(function("method"));
       }
-  
+    
       consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
-  
-      return new Stmt.Class(name, methods);
+    
+      return new Stmt.Class(name, methods, classMethods);
     }
 
     private Expr equality() {

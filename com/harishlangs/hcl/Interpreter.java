@@ -186,13 +186,22 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitClassStmt(Stmt.Class stmt) {
       environment.define(stmt.name.lexeme, null);
 
+      Map<String, HclFunction> classMethods = new HashMap<>();
+      for (Stmt.Function method : stmt.classMethods) {
+        HclFunction function = new HclFunction(method, environment, false);
+        classMethods.put(method.name.lexeme, function);
+      }
+    
+      HclClass metaclass = new HclClass(null, stmt.name.lexeme + " metaclass", classMethods);
+
+
       Map<String, HclFunction> methods = new HashMap<>();
       for (Stmt.Function method : stmt.methods) {
         HclFunction function = new HclFunction(method, environment, method.name.lexeme.equals("_init"));
         methods.put(method.name.lexeme, function);
       }
 
-      HclClass klass = new HclClass(stmt.name.lexeme, methods);
+      HclClass klass = new HclClass(metaclass, stmt.name.lexeme, methods);
       environment.assign(stmt.name, klass);
       return null;
     }
