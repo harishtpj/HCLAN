@@ -1,13 +1,8 @@
 package com.harishlangs.hcl;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.python.core.PyList;
@@ -22,28 +17,23 @@ public class Hcl {
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
     public static void main(String[] args) throws IOException {
-        if (args.length > 1) {
+        if (args.length > 2) {
             System.err.println("Usage: hcl [script]");
             System.exit(64); 
-        } else if (args.length == 1) {
-            runFile(args[0]);
+        } else if (args.length == 2) {
+            runFile(args[0], args[1]);
         } else {
             runPrompt();
         }
     }
 
-    private static void runFile(String path) throws IOException {
-        ClassLoader classLoader = Hcl.class.getClassLoader();
-        URL classLocation = classLoader.getResource("com/harishlangs/hcl/Hcl.class");
-        String classPath = classLocation.getPath();
-        String packagePath = classPath.replace("Hcl.class", "");
-        String pyFilePath = packagePath + "preprocessor/proc.py";
-
+    private static void runFile(String binDir, String path) throws IOException {
         try (PythonInterpreter pyInterp = new PythonInterpreter()) {
-            pyInterp.execfile(pyFilePath);
+            pyInterp.execfile(binDir + "lib/processor.py");
             PyObject preprocess = pyInterp.get("preprocess");
-            PyObject preprocessPrgm = preprocess.__call__(new PyString(path));
-            PyTuple res = (PyTuple) preprocessPrgm.__tojava__(PyTuple.class);
+
+            PyObject preprocessRes = preprocess.__call__(new PyString(path));
+            PyTuple res = (PyTuple) preprocessRes.__tojava__(PyTuple.class);
 
             PyList imports = (PyList) res.pyget(0).__tojava__(PyList.class);
             String proc_src = res.pyget(1).asString();
