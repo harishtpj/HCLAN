@@ -1,3 +1,4 @@
 *.class
 scratch.*
 AstPrinter.*
+*.jar
