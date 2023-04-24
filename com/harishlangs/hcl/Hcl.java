@@ -3,10 +3,13 @@ package com.harishlangs.hcl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
+
+import org.python.core.PyList;
+import org.python.core.PyObject;
+import org.python.core.PyString;
+import org.python.core.PyTuple;
+import org.python.util.PythonInterpreter;
 
 
 public class Hcl {
@@ -14,22 +17,41 @@ public class Hcl {
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
     public static void main(String[] args) throws IOException {
-        if (args.length > 1) {
+        if (args.length > 2) {
             System.err.println("Usage: hcl [script]");
             System.exit(64); 
-        } else if (args.length == 1) {
-            runFile(args[0]);
+        } else if (args.length == 2) {
+            runFile(args[0], args[1]);
         } else {
             runPrompt();
         }
     }
 
-    private static void runFile(String path) throws IOException {
-        byte[] bytes = Files.readAllBytes(Paths.get(path));
-        run(new String(bytes, Charset.defaultCharset()));
+    private static void runFile(String binDir, String path) throws IOException {
+        try (PythonInterpreter pyInterp = new PythonInterpreter()) {
+            pyInterp.execfile(binDir + "lib/processor.py");
+            PyObject preprocess = pyInterp.get("preprocess");
 
-        if (hadError) System.exit(65);
-        if (hadRuntimeError) System.exit(70);
+            PyObject preprocessRes = preprocess.__call__(new PyString(path));
+            PyTuple res = (PyTuple) preprocessRes.__tojava__(PyTuple.class);
+
+            PyList imports = (PyList) res.pyget(0).__tojava__(PyList.class);
+            String proc_src = res.pyget(1).asString();
+
+            
+            for (int i = 0; i < imports.__len__(); i++) {
+                String imported = imports.__getitem__(i).asString();
+                run(imported);
+
+                if (hadError) System.exit(65);
+                if (hadRuntimeError) System.exit(70);
+            }
+            
+            run(proc_src);
+
+            if (hadError) System.exit(65);
+            if (hadRuntimeError) System.exit(70);
+        }
     }
 
     private static void runPrompt() throws IOException {
