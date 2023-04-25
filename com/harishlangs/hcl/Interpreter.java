@@ -10,6 +10,8 @@ import com.harishlangs.hcl.std.*;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private static class BreakException extends RuntimeException {}
+    private static class InvalidTypeException extends RuntimeException {}
+    public static class InvalidListOpException extends RuntimeException {}
     public Scanner stdin = new Scanner(System.in);
 
     final Environment globals = new Environment();
@@ -19,7 +21,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     Interpreter() {
       NativeModule HCLstd = new NativeModule();
+      ListModule NatLst = new ListModule();
       globals.importMod(HCLstd.getObjects());
+      globals.importMod(NatLst.getObjects());
     }
 
     void interpret(List<Stmt> statements) {
@@ -124,6 +128,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         if (left instanceof Double && right instanceof Double) return;
         throw new RuntimeError(operator, "Operands must be numbers.");
     }
+
+    public void checkIfList(Object operand) {
+      if (operand instanceof ArrayList<?>) return;
+      throw new InvalidTypeException();
+    }
+
 
     private boolean isTruthy(Object object) {
         if (object == null) return false;
@@ -412,7 +422,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             arguments.size() + ".");
       }
 
-      return function.call(this, arguments);
+      try {
+        return function.call(this, arguments);
+      } catch (InvalidTypeException ex) {
+        throw new RuntimeError(expr.paren, "The Passed object is not a list.");
+      }
     }
 
     @Override

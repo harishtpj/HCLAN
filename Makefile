@@ -9,7 +9,7 @@ all: compile run
 
 run: compile
 	@echo "--> Running HCL"
-	@java $(PACKAGE)hcl.$(NAME) $(ARGS)
+	@java -cp $(CP) $(PACKAGE)hcl.$(NAME) .\\ $(ARGS)
 
 compile:
 	@echo "--> Building HCL Lang"
