@@ -27,11 +27,11 @@ def preprocess(path):
                 def_stack.append(match.groups())
                 proc_lines.append("")
 
-            elif re.search(r"^\s*!\s*import\s+([\.\w\\/]+)$", line):
+            elif re.search(r"^\s*!\s*include\s+([\.\w\\/]+)$", line):
                 match = re.search(r"^\s*!\s*import\s+([\.\w\\/]+)$", line)
                 imp_file = match.group(1)
                 if imp_file in imported_files:
-                    error(i+1, "Reimporting %s again" % imp_file)
+                    error(i+1, "ReIncluding %s again" % imp_file)
             
                 prgm = preprocess(imp_file + ".hcl")[1]
 

@@ -1,2 +1,2 @@
 Main-Class: com.harishlangs.hcl.Hcl
-Class-Path: lib/jython-standalone-2.7.3.jar
+Class-Path: ../lib/jython-standalone-2.7.3.jar

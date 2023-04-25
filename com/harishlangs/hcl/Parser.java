@@ -25,6 +25,7 @@ class Parser {
     }
 
     private Stmt statement() {
+      if (match(TokenType.IMPORT)) return importStatement();
       if (match(TokenType.CLASS)) return classDeclaration();
       if (match(TokenType.FUN)) return function("function");
       if (match(TokenType.BREAK)) return breakStatement();
@@ -38,6 +39,14 @@ class Parser {
       if (match(TokenType.LEFT_BRACE)) return new Stmt.Block(block());
   
       return expressionStatement();
+    }
+
+    private Stmt importStatement() {
+      Token keyword = previous();
+      Boolean isStd = match(TokenType.STD);
+      Expr module = expression();
+      consume(TokenType.SEMICOLON, "Expect ';' after import.");
+      return new Stmt.Import(keyword, isStd, module);
     }
 
     private Stmt breakStatement() {

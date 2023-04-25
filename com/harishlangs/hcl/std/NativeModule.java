@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class NativeModule implements HclModule {
+    public static final String NAME = "__native__";
 
     public NativeModule() {
         // General Functions

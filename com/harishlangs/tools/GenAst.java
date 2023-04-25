@@ -39,7 +39,8 @@ public class GenAst {
             "Print      : Expr expression",
             "Return     : Token keyword, Expr value",
             "Let        : Token name, Expr initializer",
-            "Loop       : Stmt body"
+            "Loop       : Stmt body",
+            "Import     : Token keyword, Boolean isStd, Expr module"
     ));
     }
 

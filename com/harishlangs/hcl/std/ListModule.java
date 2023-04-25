@@ -7,6 +7,7 @@ import java.util.Map;
 import com.harishlangs.hcl.*;
 
 public class ListModule implements HclModule{
+    public static final String NAME = "__list__";
     
     public ListModule() {
         currMod.put("__nlst"    , funNlst());
