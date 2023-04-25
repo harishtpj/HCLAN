@@ -14,6 +14,7 @@ abstract class Stmt {
     R visitReturnStmt(Return stmt);
     R visitLetStmt(Let stmt);
     R visitLoopStmt(Loop stmt);
+    R visitImportStmt(Import stmt);
   }
   static class Block extends Stmt {
     Block (List<Stmt> statements) {
@@ -150,6 +151,22 @@ abstract class Stmt {
     }
 
     final Stmt body;
+  }
+  static class Import extends Stmt {
+    Import (Token keyword, Boolean isStd, Expr module) {
+      this.keyword = keyword;
+      this.isStd = isStd;
+      this.module = module;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitImportStmt(this);
+    }
+
+    final Token keyword;
+    final Boolean isStd;
+    final Expr module;
   }
 
   abstract <R> R accept(Visitor<R> visitor);

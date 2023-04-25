@@ -67,7 +67,7 @@ public class Hcl {
         }
     }
 
-    private static void run(String src) {
+    public static void run(String src) {
         Scanner scanner = new Scanner(src);
         List<Token> tokens = scanner.scanTokens();
 

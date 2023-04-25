@@ -1,5 +1,9 @@
 package com.harishlangs.hcl;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -92,7 +96,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Object visitUnaryExpr(Expr.Unary expr) {
         Object right = evaluate(expr.right);
-
+        
         switch (expr.operator.type) {
             case BANG:
                 return !isTruthy(right);
@@ -438,6 +442,28 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
       throw new RuntimeError(expr.name,
           "Only instances have properties.");
+    }
+
+    @Override
+    public Void visitImportStmt(Stmt.Import stmt) {
+      Object module = evaluate(stmt.module);
+      if (!(module instanceof String)) {
+        throw new RuntimeError(stmt.keyword, "Expected a string.");
+      }
+
+      if (!stmt.isStd) {
+        try {
+          byte[] bytes = Files.readAllBytes(Paths.get((String)module + ".hcl"));
+          Hcl.run(new String(bytes, Charset.defaultCharset()));
+        } catch (IOException ex) {
+          throw new RuntimeError(stmt.keyword, "File not found: " + ex.getMessage());
+        }
+      } else {
+        // TODO: Std Imports To Be Implemented
+      }
+
+
+      return null;
     }
 
 }

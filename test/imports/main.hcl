@@ -1,6 +1,6 @@
 # Main program to test functionality of Imports
 
-!import greet
+import "greet"
 
 let name := input("Enter your name: ");
 sayHi(name);
