@@ -1,8 +1,10 @@
 package com.harishlangs.hcl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.python.core.PyList;
@@ -16,20 +18,22 @@ public class Hcl {
     private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
+    public static String homePath;
     public static void main(String[] args) throws IOException {
         if (args.length > 2) {
             System.err.println("Usage: hcl [script]");
             System.exit(64); 
         } else if (args.length == 2) {
-            runFile(args[0], args[1]);
+            homePath = Paths.get(args[0]).getParent().toString() + File.separator;
+            runFile(args[1]);
         } else {
             runPrompt();
         }
     }
 
-    private static void runFile(String binDir, String path) throws IOException {
+    private static void runFile(String path) throws IOException {
         try (PythonInterpreter pyInterp = new PythonInterpreter()) {
-            pyInterp.execfile(binDir + "lib/processor.py");
+            pyInterp.execfile(homePath + "lib/processor.py");
             PyObject preprocess = pyInterp.get("preprocess");
 
             PyObject preprocessRes = preprocess.__call__(new PyString(path));

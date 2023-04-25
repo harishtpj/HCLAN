@@ -1,6 +1,9 @@
 package com.harishlangs.hcl;
 
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,12 +25,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Environment environment = globals;
     private final Map<Expr, Integer> locals = new HashMap<>();
 
+    private final Map<String, Class<?>> natImport = new HashMap<>();
+    private final ArrayList<String> stdImport = new ArrayList<>();
+
 
     Interpreter() {
+      natImport.put("__list__", ListModule.class);
+
+      // stdImport.add("<New Imports>");
+
       NativeModule HCLstd = new NativeModule();
-      ListModule NatLst = new ListModule();
       globals.importMod(HCLstd.getObjects());
-      globals.importMod(NatLst.getObjects());
     }
 
     void interpret(List<Stmt> statements) {
@@ -459,7 +467,25 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
           throw new RuntimeError(stmt.keyword, "File not found: " + ex.getMessage());
         }
       } else {
-        // TODO: Std Imports To Be Implemented
+        if (natImport.containsKey((String)module)) {
+          try {
+            Constructor<?> constructor = natImport.get((String)module).getConstructor();
+            Object mod = constructor.newInstance();
+            Method method = natImport.get((String)module).getMethod("getObjects");
+            
+            globals.importMod((Map<String, Object>) method.invoke(mod));
+          } catch (Exception ex) {
+            ex.printStackTrace();
+          }
+        } else if (stdImport.contains((String)module)) {
+          try {
+            String path = Hcl.homePath + File.separator + "std" + File.separator + (String)module + ".hcl";
+            byte[] bytes = Files.readAllBytes(Paths.get(path));
+            Hcl.run(new String(bytes, Charset.defaultCharset()));
+          } catch (IOException ex) {
+            throw new RuntimeError(stmt.keyword, "File not found: " + ex.getMessage());
+          }
+        }
       }
 
 

@@ -20,13 +20,16 @@ genast:
 	@javac com\harishlangs\tools\\*.java
 	@java $(PACKAGE)tools.GenAst $(SRC)
 
-export: compile
-	@echo "--> Exporting Jar"
-	@jar cfm $(JAR) $(SRC)\\manifest.txt $(SRC)\\*.class $(SRC)\\std\\*.class
-	@move $(JAR) export
-	@xcopy lib export\\lib
-
 clean:
 	@echo "--> Cleaning Directory"
 	@del /s /q *.class
 	@echo "--> Cleaned Directory"
+
+export: clean compile
+	@echo "--> Exporting Jar"
+	@if not exist export mkdir export
+	@if not exist export\\bin mkdir export\\bin
+	@if not exist export\\lib mkdir export\\lib
+	@jar cfm $(JAR) $(SRC)\\manifest.txt $(SRC)\\*.class $(SRC)\\std\\*.class
+	@move $(JAR) export\\bin
+	@xcopy /y lib export\\lib
