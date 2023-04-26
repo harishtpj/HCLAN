@@ -62,4 +62,10 @@ public class HclUtils {
         throw new RuntimeError(kw, "File not found: " + ex.getMessage());
       }
     }
+
+    public static void checkNumber(Token name, Object value) {
+      if (!(value instanceof Double)) {
+        throw new RuntimeError(name, String.format("Expected %s to have a Numeric argument.", name.lexeme));
+      }
+    }
 }

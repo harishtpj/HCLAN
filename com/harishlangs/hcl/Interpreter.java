@@ -21,12 +21,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     private final Map<String, Class<?>> natImport = new HashMap<>();
     private final ArrayList<String> stdImport = new ArrayList<>();
+    private final Map<String, Class<?>> modImport = new HashMap<>();
 
 
     Interpreter() {
       natImport.put("structures", HclStructures.class);
 
       // stdImport.add("<New Imports>");
+
+      modImport.put("Math", HclMath.class);
 
       NativeModule HCLstd = new NativeModule();
       globals.importMod(HCLstd.getObjects());
@@ -404,6 +407,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             Method method = natImport.get((String)module).getMethod("getObjects");
             
             globals.importMod((Map<String, Object>) method.invoke(mod));
+          } catch (Exception ex) {
+            ex.printStackTrace();
+          }
+        } else if (modImport.containsKey((String)module)) {
+          try {
+            Constructor<?> constructor = modImport.get((String)module).getConstructor();
+            Object mod = constructor.newInstance();
+            
+            globals.define((String)module, mod);
           } catch (Exception ex) {
             ex.printStackTrace();
           }

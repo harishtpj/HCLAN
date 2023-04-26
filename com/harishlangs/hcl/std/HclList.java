@@ -22,7 +22,7 @@ public class HclList extends HclInstance {
             case "addAt":
                 return funAddAt(name);
             case "get":
-                return funGet();
+                return funGet(name);
             case "clear":
                 return funClear();
             case "delete":
@@ -76,9 +76,7 @@ public class HclList extends HclInstance {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                if (!(arguments.get(0) instanceof Double)) {
-                    throw new RuntimeError(name, String.format("Expected %s to be a Number.", name.lexeme));
-                }
+                HclUtils.checkNumber(name, arguments.get(0));
                 Integer index = (Integer)HclUtils.convertNative(arguments.get(0));
                 list.add(index, arguments.get(1));
                 return null;
@@ -89,7 +87,7 @@ public class HclList extends HclInstance {
         };
     }
 
-    private Object funGet() {
+    private Object funGet(Token name) {
         return new HclCallable() {
             @Override
             public boolean isVaArg() { return false; }
@@ -99,6 +97,7 @@ public class HclList extends HclInstance {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
+                HclUtils.checkNumber(name, arguments.get(0));
                 return list.get((Integer)HclUtils.convertNative(arguments.get(0)));
             }
 
@@ -136,9 +135,7 @@ public class HclList extends HclInstance {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                if (!(arguments.get(0) instanceof Double)) {
-                    throw new RuntimeError(name, String.format("Expected %s to be a Number.", name.lexeme));
-                }
+                HclUtils.checkNumber(name, arguments.get(0));
                 Integer index = (Integer)HclUtils.convertNative(arguments.get(0));
                 return list.remove(index);
             }
@@ -162,7 +159,7 @@ public class HclList extends HclInstance {
             }
 
             @Override
-            public String toString() { return "<NativeList method .get>"; }
+            public String toString() { return "<NativeList method .length>"; }
         };
     }
 }
