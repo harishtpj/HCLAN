@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class NativeModule implements HclModule {
-    public static final String NAME = "__native__";
 
     public NativeModule() {
         // General Functions
@@ -73,7 +72,7 @@ public class NativeModule implements HclModule {
             public Object call(Interpreter interpreter, List<Object> arguments) {
                 String fmtString = (String)arguments.remove(0);
                 Object[] argsArray = arguments.stream()
-                                              .map(obj -> interpreter.convertNative(obj))
+                                              .map(obj -> HclUtils.convertNative(obj))
                                               .collect(Collectors.toList())
                                               .toArray();
                 return String.format(fmtString, argsArray);
@@ -148,7 +147,7 @@ public class NativeModule implements HclModule {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                int exitCode = (int)interpreter.convertNative(arguments.get(0));
+                int exitCode = (int)HclUtils.convertNative(arguments.get(0));
                 System.exit(exitCode);
                 return null;
             }
