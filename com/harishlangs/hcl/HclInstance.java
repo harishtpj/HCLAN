@@ -3,15 +3,15 @@ package com.harishlangs.hcl;
 import java.util.HashMap;
 import java.util.Map;
 
-class HclInstance {
+public class HclInstance {
     private HclClass klass;
     private final Map<String, Object> fields = new HashMap<>();
 
-    HclInstance(HclClass klass) {
+    protected HclInstance(HclClass klass) {
         this.klass = klass;
     }
 
-    Object get(Token name) {
+    protected Object get(Token name) {
         if (fields.containsKey(name.lexeme)) {
           return fields.get(name.lexeme);
         }
@@ -22,7 +22,7 @@ class HclInstance {
         throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
     }
 
-    void set(Token name, Object value) {
+    protected void set(Token name, Object value) {
         fields.put(name.lexeme, value);
     }
 

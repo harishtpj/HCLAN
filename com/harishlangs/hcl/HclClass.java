@@ -3,12 +3,12 @@ package com.harishlangs.hcl;
 import java.util.List;
 import java.util.Map;
 
-class HclClass extends HclInstance implements HclCallable {
+public class HclClass extends HclInstance implements HclCallable {
     final String name;
     final HclClass superclass;
     private final Map<String, HclFunction> methods;
 
-    HclClass(HclClass metaclass, String name, HclClass superclass, Map<String, HclFunction> methods) {
+    protected HclClass(HclClass metaclass, String name, HclClass superclass, Map<String, HclFunction> methods) {
       super(metaclass);
       this.superclass = superclass;
       this.name = name;

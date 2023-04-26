@@ -1,12 +1,8 @@
 package com.harishlangs.hcl;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -17,8 +13,6 @@ import com.harishlangs.hcl.std.*;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private static class BreakException extends RuntimeException {}
-    private static class InvalidTypeException extends RuntimeException {}
-    public static class InvalidListOpException extends RuntimeException {}
     public Scanner stdin = new Scanner(System.in);
 
     final Environment globals = new Environment();
@@ -27,12 +21,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     private final Map<String, Class<?>> natImport = new HashMap<>();
     private final ArrayList<String> stdImport = new ArrayList<>();
+    private final Map<String, Class<?>> modImport = new HashMap<>();
 
 
     Interpreter() {
-      natImport.put("__list__", ListModule.class);
+      natImport.put("structures", HclStructures.class);
 
       // stdImport.add("<New Imports>");
+
+      modImport.put("Math", HclMath.class);
 
       NativeModule HCLstd = new NativeModule();
       globals.importMod(HCLstd.getObjects());
@@ -58,9 +55,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       Object left = evaluate(expr.left);
     
       if (expr.operator.type == TokenType.OR) {
-        if (isTruthy(left)) return left;
+        if (HclUtils.isTruthy(left)) return left;
       } else {
-        if (!isTruthy(left)) return left;
+        if (!HclUtils.isTruthy(left)) return left;
       }
     
       return evaluate(expr.right);
@@ -107,9 +104,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         
         switch (expr.operator.type) {
             case BANG:
-                return !isTruthy(right);
+                return !HclUtils.isTruthy(right);
             case MINUS:
-                checkNumberOperand(expr.operator, right);
+                HclUtils.checkNumberOperand(expr.operator, right);
                 return -(double)right;
         }  
 
@@ -129,60 +126,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       } else {
         return globals.get(name);
       }
-    }
-
-    private void checkNumberOperand(Token operator, Object operand) {
-        if (operand instanceof Double) return;
-        throw new RuntimeError(operator, "Operand must be a number.");
-    }
-
-    private void checkNumberOperands(Token operator, Object left, Object right) {
-        if (left instanceof Double && right instanceof Double) return;
-        throw new RuntimeError(operator, "Operands must be numbers.");
-    }
-
-    public void checkIfList(Object operand) {
-      if (operand instanceof ArrayList<?>) return;
-      throw new InvalidTypeException();
-    }
-
-
-    private boolean isTruthy(Object object) {
-        if (object == null) return false;
-        if (object instanceof Boolean) return (boolean)object;
-        return true;
-    }
-
-    private boolean isEqual(Object a, Object b) {
-        if (a == null && b == null) return true;
-        if (a == null) return false;
-    
-        return a.equals(b);
-    }
-
-    private String stringify(Object object) {
-        if (object == null) return "null";
-    
-        if (object instanceof Double) {
-          String text = object.toString();
-          if (text.endsWith(".0")) {
-            text = text.substring(0, text.length() - 2);
-          }
-          return text;
-        }
-    
-        return object.toString();
-    }
-
-    public Object convertNative(Object object) {
-      if (object instanceof Double) {
-        String text = object.toString();
-        if (text.endsWith(".0")) {
-          text = text.substring(0, text.length() - 2);
-          return Integer.parseInt(text);
-        }
-      }
-      return object;
     }
 
     @Override
@@ -278,7 +221,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
-      if (isTruthy(evaluate(stmt.condition))) {
+      if (HclUtils.isTruthy(evaluate(stmt.condition))) {
         execute(stmt.thenBranch);
       } else if (stmt.elseBranch != null) {
         execute(stmt.elseBranch);
@@ -289,7 +232,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visitPrintStmt(Stmt.Print stmt) {
       Object value = evaluate(stmt.expression);
-      System.out.print(stringify(value));
+      System.out.print(HclUtils.stringify(value));
       return null;
     }
 
@@ -350,19 +293,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
       switch (expr.operator.type) {
         case GREATER:
-            checkNumberOperands(expr.operator, left, right);
+            HclUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left > (double)right;
         case GREATER_EQUAL:
-            checkNumberOperands(expr.operator, left, right);
+            HclUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left >= (double)right;
         case LESS:
-            checkNumberOperands(expr.operator, left, right);
+            HclUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left < (double)right;
         case LESS_EQUAL:
-            checkNumberOperands(expr.operator, left, right);
+            HclUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left <= (double)right;
         case MINUS:
-            checkNumberOperands(expr.operator, left, right);
+            HclUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left - (double)right;
         case PLUS:
 
@@ -375,17 +318,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
           }
 
           if (left instanceof String && right instanceof Double) {
-            return (String)left + stringify(right);
+            return (String)left + HclUtils.stringify(right);
           }
 
           if (left instanceof Double && right instanceof String) {
-            return stringify(left) + (String)right;
+            return HclUtils.stringify(left) + (String)right;
           }
 
           throw new RuntimeError(expr.operator,"Operands must be two numbers or two strings.");
 
         case SLASH:
-            checkNumberOperands(expr.operator, left, right);
+            HclUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left / (double)right;
         case STAR:
             if (left instanceof Double && right instanceof Double) {
@@ -403,11 +346,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             throw new RuntimeError(expr.operator,"Operands must be two numbers or any one can be strings.");
         
         case CARET:
-          checkNumberOperands(expr.operator, left, right);
+          HclUtils.checkNumberOperands(expr.operator, left, right);
           return Math.pow((double)left, (double)right);
 
-        case BANG_EQUAL: return !isEqual(left, right);
-        case EQUAL: return isEqual(left, right);
+        case BANG_EQUAL: return !HclUtils.isEqual(left, right);
+        case EQUAL: return HclUtils.isEqual(left, right);
       }
 
       // Unreachable.
@@ -433,12 +376,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             function.arity() + " arguments but got " +
             arguments.size() + ".");
       }
-
-      try {
-        return function.call(this, arguments);
-      } catch (InvalidTypeException ex) {
-        throw new RuntimeError(expr.paren, "The Passed object is not a list.");
-      }
+      return function.call(this, arguments);
     }
 
     @Override
@@ -460,12 +398,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       }
 
       if (!stmt.isStd) {
-        try {
-          byte[] bytes = Files.readAllBytes(Paths.get((String)module + ".hcl"));
-          Hcl.run(new String(bytes, Charset.defaultCharset()));
-        } catch (IOException ex) {
-          throw new RuntimeError(stmt.keyword, "File not found: " + ex.getMessage());
-        }
+        HclUtils.importIt(stmt.keyword, (String)module + ".hcl");
       } else {
         if (natImport.containsKey((String)module)) {
           try {
@@ -477,14 +410,18 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
           } catch (Exception ex) {
             ex.printStackTrace();
           }
-        } else if (stdImport.contains((String)module)) {
+        } else if (modImport.containsKey((String)module)) {
           try {
-            String path = Hcl.homePath + File.separator + "std" + File.separator + (String)module + ".hcl";
-            byte[] bytes = Files.readAllBytes(Paths.get(path));
-            Hcl.run(new String(bytes, Charset.defaultCharset()));
-          } catch (IOException ex) {
-            throw new RuntimeError(stmt.keyword, "File not found: " + ex.getMessage());
+            Constructor<?> constructor = modImport.get((String)module).getConstructor();
+            Object mod = constructor.newInstance();
+            
+            globals.define((String)module, mod);
+          } catch (Exception ex) {
+            ex.printStackTrace();
           }
+        } else if (stdImport.contains((String)module)) {
+          String path = Hcl.homePath + File.separator + "std" + File.separator + (String)module + ".hcl";
+          HclUtils.importIt(stmt.keyword, path);
         }
       }
 
