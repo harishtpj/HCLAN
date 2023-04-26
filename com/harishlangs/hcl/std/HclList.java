@@ -1,6 +1,7 @@
 package com.harishlangs.hcl.std;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,12 @@ public class HclList extends HclInstance {
 
     HclList() {
         super(null);
-        list = new ArrayList<>();
+        this.list = new ArrayList<>();
+    }
+
+    HclList(Object[] lst) {
+        super(null);
+        this.list = new ArrayList<>(Arrays.asList(lst));
     }
 
     @Override
