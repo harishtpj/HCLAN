@@ -58,16 +58,34 @@ public class Hcl {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
         while (true) { 
-          System.out.print("hcl .>> ");
-          String line = reader.readLine();
-          if (line == null) break;
-          run(line);
-          hadError = false;
+            hadError = false;
+            System.out.print("hcl .>> ");
+
+            String line = reader.readLine();
+            if (line == null) break;
+
+            Scanner scanner = new Scanner(line);
+            List<Token> tokens = scanner.scanTokens();
+
+            Parser parser = new Parser(tokens);
+            Object syntax = parser.parseRepl();
+
+            if (hadError) continue;
+
+            if (syntax instanceof List) {
+                interpreter.interpret((List<Stmt>)syntax);
+            } else if (syntax instanceof Expr) {
+                String result = interpreter.interpret((Expr)syntax);
+                if (result != null) {
+                    System.out.printf(":= %s\n", result);
+                }
+            }
         }
     }
 

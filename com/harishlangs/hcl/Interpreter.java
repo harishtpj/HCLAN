@@ -46,6 +46,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       }
     }
 
+    String interpret(Expr expression) {
+      try {
+        Object value = evaluate(expression);
+        return HclUtils.stringify(value);
+      } catch (RuntimeError error) {
+        Hcl.runtimeError(error);
+        return null;
+      }
+    }
+
     @Override
     public Object visitLiteralExpr(Expr.Literal expr) {
         return expr.value;
@@ -109,6 +119,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case MINUS:
                 HclUtils.checkNumberOperand(expr.operator, right);
                 return -(double)right;
+            default:
+                // Do nothing
         }  
 
         // Unreachable.
@@ -352,6 +364,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         case BANG_EQUAL: return !HclUtils.isEqual(left, right);
         case EQUAL: return HclUtils.isEqual(left, right);
+        default:
+        // Do nothing
       }
 
       // Unreachable.
@@ -391,6 +405,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
           "Only instances have properties.");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Void visitImportStmt(Stmt.Import stmt) {
       Object module = evaluate(stmt.module);
