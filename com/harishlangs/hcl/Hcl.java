@@ -5,13 +5,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
-import org.python.core.PyList;
-import org.python.core.PyObject;
-import org.python.core.PyString;
-import org.python.core.PyTuple;
+import org.python.core.*;
 import org.python.util.PythonInterpreter;
+
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 
 
 public class Hcl {
@@ -20,14 +22,18 @@ public class Hcl {
     static boolean hadRuntimeError = false;
     public static String homePath;
     public static void main(String[] args) throws IOException {
-        if (args.length > 2) {
-            System.err.println("Usage: hcl [script]");
-            System.exit(64); 
-        } else if (args.length == 2) {
-            homePath = Paths.get(args[0]).getParent().toString() + File.separator;
-            runFile(args[1]);
-        } else {
-            runPrompt();
+        homePath = Paths.get(args[0]).getParent().toString() + File.separator;
+        ArgumentParser parser = new ArgParser().getParser();
+        try {
+            Namespace res = parser.parseArgs(Arrays.copyOfRange(args, 1, args.length));
+
+            if (res.getString("file") == null) {
+                runPrompt();
+            } else {
+                runFile(res.getString("file"));
+            }
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
         }
     }
 
@@ -63,9 +69,11 @@ public class Hcl {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
+        System.out.println(Meta.replStr);
+
         while (true) { 
             hadError = false;
-            System.out.print("hcl .>> ");
+            System.out.print("HCL .>> ");
 
             String line = reader.readLine();
             if (line == null) break;

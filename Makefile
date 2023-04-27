@@ -2,7 +2,7 @@
 PACKAGE = com.harishlangs.
 SRC = com\harishlangs\hcl
 NAME = Hcl
-CP = .;lib\jython-standalone-2.7.3.jar
+CP = .;lib\argparse4j-0.9.0.jar;lib\jython-standalone-2.7.3.jar
 JAR = HCL.jar
 
 all: compile run
