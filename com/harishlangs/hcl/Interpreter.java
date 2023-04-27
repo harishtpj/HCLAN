@@ -22,6 +22,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private final Map<String, Class<?>> natImport = new HashMap<>();
     private final ArrayList<String> stdImport = new ArrayList<>();
     private final Map<String, Class<?>> modImport = new HashMap<>();
+    private final ArrayList<String> imported = new ArrayList<>();
 
 
     Interpreter() {
@@ -397,8 +398,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         throw new RuntimeError(stmt.keyword, "Expected a string.");
       }
 
+      if (imported.contains((String)module)) {
+        throw new RuntimeError(stmt.keyword, 
+            String.format("Module %s is already imported.", (String)module));
+      }
+
+      if ((imported.contains("Std " + (String)module))) {
+        throw new RuntimeError(stmt.keyword, 
+            String.format("Standard Module %s is already imported.", (String)module));
+      }
+
       if (!stmt.isStd) {
         HclUtils.importIt(stmt.keyword, (String)module + ".hcl");
+        imported.add((String)module);
       } else {
         if (natImport.containsKey((String)module)) {
           try {
@@ -407,6 +419,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             Method method = natImport.get((String)module).getMethod("getObjects");
             
             globals.importMod((Map<String, Object>) method.invoke(mod));
+            imported.add("Std " + (String)module);
           } catch (Exception ex) {
             ex.printStackTrace();
           }
@@ -416,15 +429,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             Object mod = constructor.newInstance();
             
             globals.define((String)module, mod);
+            imported.add("Std " + (String)module);
           } catch (Exception ex) {
             ex.printStackTrace();
           }
         } else if (stdImport.contains((String)module)) {
           String path = Hcl.homePath + File.separator + "std" + File.separator + (String)module + ".hcl";
           HclUtils.importIt(stmt.keyword, path);
+          imported.add("Std " + (String)module);
+        } else {
+          throw new RuntimeError(stmt.keyword, 
+            String.format("Can't import Standard Module %s.", (String)module));
         }
       }
-
 
       return null;
     }
