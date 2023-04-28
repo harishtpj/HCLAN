@@ -87,7 +87,7 @@ HCL is interesting!
 ```
 
 # Support
-If you've any questions regarding this project, please file an [issue](https://github.com/harishtpj/HCL/issues/new).
+If you've any questions regarding this project, please check our [documentation](https://harish-kumar.gitbook.io/hcl-docs/) or file an [issue](https://github.com/harishtpj/HCL/issues/new).
 
 # Contributing
 Contributions are welcome, To contribute please refer to details [here](https://github.com/harishtpj/HCL/blob/master/CONTRIBUTING.md).
@@ -100,4 +100,4 @@ Contributions are welcome, To contribute please refer to details [here](https://
 #### This project is [BSD-2](https://github.com/harishtpj/HCL/blob/master/LICENSE) licensed.
 
 # Project status
-This project is still **In its baby steps**. Many features need to be added. Thus the stability of the syntax is not guaranteed. However, most features is planned to be retained. Cuntributers can give their contribution to this project to make this project stable.
+This project is still **In its baby steps**. Many features need to be added. Thus the stability of the syntax is not guaranteed. However, most features is planned to be retained. Contributers can give their contribution to this project to make this project stable.
