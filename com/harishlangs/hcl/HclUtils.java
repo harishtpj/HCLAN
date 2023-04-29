@@ -68,4 +68,10 @@ public class HclUtils {
         throw new RuntimeError(name, String.format("Expected %s to have a Numeric argument.", name.lexeme));
       }
     }
+
+    public static String repeatStr(String s, int times) {
+      if (times <= 0) return "";
+      else if (times % 2 == 0) return repeatStr(s+s, times/2);
+      else return s + repeatStr(s+s, times/2);
+    }
 }
