@@ -92,8 +92,16 @@ If you've any questions regarding this project, please check our [documentation]
 # Contributing
 Contributions are welcome, To contribute please refer to details [here](https://github.com/harishtpj/HCL/blob/master/CONTRIBUTING.md).
 
-<!--# Authors and acknowledgment
--- TODO -->
+## Contributors
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 # License
 #### Copyright © 2023 [M.V.Harish Kumar](https://github.com/harishtpj). <br>
