@@ -349,11 +349,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             }
 
             if (left instanceof String && right instanceof Double) {
-              return ((String)left).repeat((int)Math.floor((double)right));
+              return HclUtils.repeatStr((String)left, (int)Math.floor((double)right));
+              //return ((String)left).repeat((int)Math.floor((double)right));
             }
 
             if (left instanceof Double && right instanceof String) {
-              return ((String)right).repeat((int)Math.floor((double)left));
+              return HclUtils.repeatStr((String)right, (int)Math.floor((double)left));
+              // return ((String)right).repeat((int)Math.floor((double)left));
             }
 
             throw new RuntimeError(expr.operator,"Operands must be two numbers or any one can be strings.");
