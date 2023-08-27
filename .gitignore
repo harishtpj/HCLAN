@@ -3,3 +3,4 @@ scratch.*
 AstPrinter.*
 *.jar
 export
+*.msi

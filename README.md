@@ -4,7 +4,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![made-with-java](https://img.shields.io/badge/Made%20with-Java-orange?&logo=java&logoColor=white)](https://www.oracle.com/in/java/)
 [![java-version](https://img.shields.io/badge/Java-v18.0.1.1-orange)](https://www.oracle.com/in/java/)
-![hclan-version](https://img.shields.io/badge/HCLAN-v1.0.0-blue)
+![hclan-version](https://img.shields.io/badge/HCLAN-v1.1.0-blue)
 <a href="https://codeclimate.com/github/harishtpj/HCLAN/maintainability"><img src="https://api.codeclimate.com/v1/badges/3a263ecd67ac61522f2f/maintainability" /></a>
 
 A simple, yet advanced **H**igh level **C**omputing **L**anguage
@@ -15,19 +15,19 @@ very **modern syntax** inspired from Java and Python. This interpreter is inspir
 Interpreters](https://craftinginterpreters.com/).
 
 # Requirements
-- Java JDK (latest version is more preferable)
+- Java JDK >= 8 (latest version is more preferable)
 
 # Installation
 To Install the interpreter, head over to the [releases](https://github.com/harishtpj/HCLAN/releases) page and 
 download the latest release of HCLAN interpreter. The zip/tarball file will be named as `hclan-<latest_version>`.
-Unzip the release and store it in your desired directory.
 
-Then Add the `/bin` directory to your PATH environment variable.
+As of now, HCLAN interpreter is available for **Windows** as a **.msi** installer. For other platforms, it is available as a **.tar.gz** file which currently only contains a **.jar** file. I'm working on porting the language to the other platforms.
 
+**Note that the language's .jar file is completely executable and works on all platforms. But a proper interface still need to be developed for other Platforms**
 
 #### For windows users
 
-1. Copy the `\bin` location of HCLAN installed folder to clipboard
+1. Install by double-clicking the installer and Copy the installation location to clipboard
 2. The first step depends which version of Windows you're using:
   * If you're using Windows 8 or 10, press the Windows key, then search for and
     select "System (Control Panel)".
@@ -68,7 +68,7 @@ Then Add the `/bin` directory to your PATH environment variable.
 
 # Usage
 To run your first program, fire up you favourite text editor and copy the following lines to `hello.hln` file:
-```hcl
+```hclan
 # A Simple Hello, World! program
 
 println "Hello, world!";

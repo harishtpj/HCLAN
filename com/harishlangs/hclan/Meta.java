@@ -2,7 +2,7 @@ package com.harishlangs.hclan;
 
 public class Meta {
     public static final int MAJOR = 1;
-    public static final int MINOR = 0;
+    public static final int MINOR = 1;
     public static final int PATCH = 0;
 
     public static final String version = String.format("v%d.%d.%d", MAJOR, MINOR, PATCH);
