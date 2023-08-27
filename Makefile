@@ -1,18 +1,18 @@
-# Makefile for HCL Language
+# Makefile for HCLAN Language
 PACKAGE = com.harishlangs.
-SRC = com\harishlangs\hcl
-NAME = Hcl
-JAR = HCL.jar
+SRC = com\harishlangs\hclan
+NAME = Hclan
+JAR = HCLAN.jar
 
 all: compile run
 
 run: compile
-	@echo "--> Running HCL"
-	@java $(PACKAGE)hcl.$(NAME) .\\ $(ARGS)
+	@echo "--> Running HCLAN"
+	@java $(PACKAGE)hclan.$(NAME) .\\ $(ARGS)
 
 compile:
-	@echo "--> Building HCL Lang"
-	@javac $(SRC)\\Hcl.java
+	@echo "--> Building HCLAN Lang"
+	@javac $(SRC)\\Hclan.java
 
 genast:
 	@echo "--> Generating AST Tree"
@@ -32,7 +32,7 @@ export: clean compile
 
 installer: export
 	@echo "--> Creating MSI installer"
-	@jpackage --input export --name HCL --main-jar HCL.jar --main-class com.harishlangs.hcl.Hcl \
+	@jpackage --input export --name HCLAN --main-jar HCLAN.jar --main-class $(PACKAGE)hclan.$(NAME) \
 				--type msi --win-dir-chooser --win-per-user-install --win-console --license-file LICENSE \
-				--vendor "Harish Kumar" --description "The HCL Language" \
+				--vendor "Harish Kumar" --description "The HCLAN Language" \
 				--copyright "Copyright (c) 2023, Harish Kumar"

@@ -1,14 +1,14 @@
-package com.harishlangs.hcl.std;
+package com.harishlangs.hclan.std;
 
 import java.util.List;
 import java.util.Map;
 
-import com.harishlangs.hcl.HclCallable;
-import com.harishlangs.hcl.Interpreter;
+import com.harishlangs.hclan.HclanCallable;
+import com.harishlangs.hclan.Interpreter;
 
-public class HclStructures implements HclModule {
+public class HclanStructures implements HclanModule {
 
-    public HclStructures() {
+    public HclanStructures() {
         currMod.put("List", funList());
         currMod.put("Dict", funDict());
     }
@@ -18,7 +18,7 @@ public class HclStructures implements HclModule {
     }
 
     private Object funList() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -27,7 +27,7 @@ public class HclStructures implements HclModule {
       
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-              return new HclList();
+              return new HclanList();
             }
       
             @Override
@@ -36,7 +36,7 @@ public class HclStructures implements HclModule {
     }
 
     private Object funDict() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -45,7 +45,7 @@ public class HclStructures implements HclModule {
       
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-              return new HclDict();
+              return new HclanDict();
             }
       
             @Override

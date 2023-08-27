@@ -1,2 +1,0 @@
-Built-By: M.V.Harish Kumar
-Main-Class: com.harishlangs.hcl.Hcl

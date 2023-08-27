@@ -1,4 +1,4 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 public class RuntimeError extends RuntimeException {
     final Token token;

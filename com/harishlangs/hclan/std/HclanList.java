@@ -1,21 +1,21 @@
-package com.harishlangs.hcl.std;
+package com.harishlangs.hclan.std;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.harishlangs.hcl.*;
+import com.harishlangs.hclan.*;
 
-public class HclList extends HclInstance {
+public class HclanList extends HclanInstance {
     private final ArrayList<Object> list;
 
-    HclList() {
+    HclanList() {
         super(null);
         this.list = new ArrayList<>();
     }
 
-    HclList(Object[] lst) {
+    HclanList(Object[] lst) {
         super(null);
         this.list = new ArrayList<>(Arrays.asList(lst));
     }
@@ -48,13 +48,13 @@ public class HclList extends HclInstance {
     @Override
     public String toString() {
         return list.stream()
-                   .map(obj -> HclUtils.convertNative(obj))
+                   .map(obj -> HclanUtils.convertNative(obj))
                    .collect(Collectors.toList())
                    .toString();
     }
 
     private Object funAdd() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -73,7 +73,7 @@ public class HclList extends HclInstance {
     }
 
     private Object funAddAt(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -82,8 +82,8 @@ public class HclList extends HclInstance {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
-                Integer index = (Integer)HclUtils.convertNative(arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
+                Integer index = (Integer)HclanUtils.convertNative(arguments.get(0));
                 list.add(index, arguments.get(1));
                 return null;
             }
@@ -94,7 +94,7 @@ public class HclList extends HclInstance {
     }
 
     private Object funGet(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -103,8 +103,8 @@ public class HclList extends HclInstance {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
-                return list.get((Integer)HclUtils.convertNative(arguments.get(0)));
+                HclanUtils.checkNumber(name, arguments.get(0));
+                return list.get((Integer)HclanUtils.convertNative(arguments.get(0)));
             }
 
             @Override
@@ -113,7 +113,7 @@ public class HclList extends HclInstance {
     }
 
     private Object funClear() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -132,7 +132,7 @@ public class HclList extends HclInstance {
     }
 
     private Object funDelete(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -141,8 +141,8 @@ public class HclList extends HclInstance {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
-                Integer index = (Integer)HclUtils.convertNative(arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
+                Integer index = (Integer)HclanUtils.convertNative(arguments.get(0));
                 return list.remove(index);
             }
 
@@ -152,7 +152,7 @@ public class HclList extends HclInstance {
     }
 
     private Object funLength() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 

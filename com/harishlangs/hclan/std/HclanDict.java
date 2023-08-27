@@ -1,15 +1,15 @@
-package com.harishlangs.hcl.std;
+package com.harishlangs.hclan.std;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.harishlangs.hcl.*;
+import com.harishlangs.hclan.*;
 
-public class HclDict extends HclInstance {
+public class HclanDict extends HclanInstance {
     private final Map<Object, Object> dict;
 
-    HclDict() {
+    HclanDict() {
         super(null);
         this.dict = new HashMap<>();
     }
@@ -49,12 +49,12 @@ public class HclDict extends HclInstance {
     public String toString() {
         Map<Object, Object> ndict  = new HashMap<>();
         dict.forEach((key, val) -> 
-                            ndict.put(HclUtils.convertNative(key), HclUtils.convertNative(val)));
+                            ndict.put(HclanUtils.convertNative(key), HclanUtils.convertNative(val)));
         return ndict.toString();
     }
 
     private Object funPut() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -73,7 +73,7 @@ public class HclDict extends HclInstance {
     }
 
     private Object funGet() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -92,7 +92,7 @@ public class HclDict extends HclInstance {
     }
 
     private Object funClear() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -111,7 +111,7 @@ public class HclDict extends HclInstance {
     }
 
     private Object funContainsKey() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -129,7 +129,7 @@ public class HclDict extends HclInstance {
     }
 
     private Object funContainsValue() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -147,7 +147,7 @@ public class HclDict extends HclInstance {
     }
 
     private Object funKeys() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -157,7 +157,7 @@ public class HclDict extends HclInstance {
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
                 Object[] keys = dict.keySet().toArray();
-                return new HclList(keys);
+                return new HclanList(keys);
             }
 
             @Override
@@ -166,7 +166,7 @@ public class HclDict extends HclInstance {
     }
 
     private Object funValues() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -176,7 +176,7 @@ public class HclDict extends HclInstance {
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
                 Object[] values = dict.values().toArray();
-                return new HclList(values);
+                return new HclanList(values);
             }
 
             @Override
@@ -185,7 +185,7 @@ public class HclDict extends HclInstance {
     }
 
     private Object funRemove() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -203,7 +203,7 @@ public class HclDict extends HclInstance {
     }
 
     private Object funSize() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 

@@ -1,11 +1,11 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class HclUtils {
+public class HclanUtils {
     public static boolean isTruthy(Object object) {
         if (object == null) return false;
         if (object instanceof Boolean) return (boolean)object;
@@ -57,7 +57,7 @@ public class HclUtils {
     public static void importIt(Token kw, String path) {
       try {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
-        Hcl.run(new String(bytes, Charset.defaultCharset()));
+        Hclan.run(new String(bytes, Charset.defaultCharset()));
       } catch (IOException ex) {
         throw new RuntimeError(kw, "File not found: " + ex.getMessage());
       }

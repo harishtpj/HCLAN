@@ -1,23 +1,23 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.util.List;
 
-class HclFunction implements HclCallable {
+class HclanFunction implements HclanCallable {
     private final Stmt.Function declaration;
     private final Environment closure;
 
     private final boolean isInitializer;
 
-    HclFunction(Stmt.Function declaration, Environment closure, boolean isInitializer) {
+    HclanFunction(Stmt.Function declaration, Environment closure, boolean isInitializer) {
         this.isInitializer = isInitializer;
         this.closure = closure;
         this.declaration = declaration;
     }
 
-    HclFunction bind(HclInstance instance) {
+    HclanFunction bind(HclanInstance instance) {
         Environment environment = new Environment(closure);
         environment.define("self", instance);
-        return new HclFunction(declaration, environment, isInitializer);
+        return new HclanFunction(declaration, environment, isInitializer);
     }
 
     @Override

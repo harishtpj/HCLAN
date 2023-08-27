@@ -1,4 +1,4 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -465,7 +465,7 @@ class Parser {
     }
 
     private ParseError error(Token token, String message) {
-        Hcl.error(token, message);
+        Hclan.error(token, message);
         return new ParseError();
     }
 

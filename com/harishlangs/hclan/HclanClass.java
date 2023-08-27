@@ -1,21 +1,21 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.util.List;
 import java.util.Map;
 
-public class HclClass extends HclInstance implements HclCallable {
+public class HclanClass extends HclanInstance implements HclanCallable {
     final String name;
-    final HclClass superclass;
-    private final Map<String, HclFunction> methods;
+    final HclanClass superclass;
+    private final Map<String, HclanFunction> methods;
 
-    protected HclClass(HclClass metaclass, String name, HclClass superclass, Map<String, HclFunction> methods) {
+    protected HclanClass(HclanClass metaclass, String name, HclanClass superclass, Map<String, HclanFunction> methods) {
       super(metaclass);
       this.superclass = superclass;
       this.name = name;
       this.methods = methods;
     }
 
-    HclFunction findMethod(String name) {
+    HclanFunction findMethod(String name) {
       if (methods.containsKey(name)) {
         return methods.get(name);
       }
@@ -29,9 +29,9 @@ public class HclClass extends HclInstance implements HclCallable {
 
     @Override
     public Object call(Interpreter interpreter, List<Object> arguments) {
-        HclInstance instance = new HclInstance(this);
+        HclanInstance instance = new HclanInstance(this);
 
-        HclFunction initializer = findMethod("_init");
+        HclanFunction initializer = findMethod("_init");
         if (initializer != null) {
           initializer.bind(instance).call(interpreter, arguments);
         }
@@ -41,7 +41,7 @@ public class HclClass extends HclInstance implements HclCallable {
 
     @Override
     public int arity() {
-        HclFunction initializer = findMethod("_init");
+        HclanFunction initializer = findMethod("_init");
         if (initializer == null) return 0;
         return initializer.arity();
     }

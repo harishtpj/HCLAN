@@ -1,4 +1,4 @@
-# This program test the code in `while_as_loop.hcl`
+# This program test the code in `while_as_loop.hln`
 
 let a := 0;
 while a <= 20 {

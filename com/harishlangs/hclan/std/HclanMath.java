@@ -1,11 +1,11 @@
-package com.harishlangs.hcl.std;
+package com.harishlangs.hclan.std;
 
 import java.util.List;
 
-import com.harishlangs.hcl.*;
+import com.harishlangs.hclan.*;
 
-public class HclMath extends HclClass {
-    public HclMath() {
+public class HclanMath extends HclanClass {
+    public HclanMath() {
         super(null, null, null, null);
     }
 
@@ -66,7 +66,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funAbs(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -75,7 +75,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.abs((Double)arguments.get(0));
             }
 
@@ -85,7 +85,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funAcos(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -94,7 +94,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.acos((Double)arguments.get(0));
             }
 
@@ -104,7 +104,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funAsin(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -113,7 +113,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.asin((Double)arguments.get(0));
             }
 
@@ -123,7 +123,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funCbrt(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -132,7 +132,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.cbrt((Double)arguments.get(0));
             }
 
@@ -142,7 +142,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funCeil(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -151,7 +151,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.ceil((Double)arguments.get(0));
             }
 
@@ -161,7 +161,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funCos(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -170,7 +170,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.cos((Double)arguments.get(0));
             }
 
@@ -180,7 +180,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funExp(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -189,7 +189,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.exp((Double)arguments.get(0));
             }
 
@@ -199,7 +199,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funFloor(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -208,7 +208,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.floor((Double)arguments.get(0));
             }
 
@@ -218,7 +218,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funHypot(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -227,8 +227,8 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
-                HclUtils.checkNumber(name, arguments.get(1));
+                HclanUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(1));
                 return Math.hypot((Double)arguments.get(0), (Double)arguments.get(1));
             }
 
@@ -238,7 +238,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funLn(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -247,7 +247,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.log((Double)arguments.get(0));
             }
 
@@ -257,7 +257,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funLog(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -266,7 +266,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 Double base = (Double)arguments.get(0);
                 Double num = (Double)arguments.get(1);
 
@@ -279,7 +279,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funLog10(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -288,7 +288,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.log10((Double)arguments.get(0));
             }
 
@@ -298,7 +298,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funMax(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -307,8 +307,8 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
-                HclUtils.checkNumber(name, arguments.get(1));
+                HclanUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(1));
                 return Math.max((Double)arguments.get(0), (Double)arguments.get(1));
             }
 
@@ -318,7 +318,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funMin(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -327,8 +327,8 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
-                HclUtils.checkNumber(name, arguments.get(1));
+                HclanUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(1));
                 return Math.min((Double)arguments.get(0), (Double)arguments.get(1));
             }
 
@@ -338,7 +338,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funPow(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -347,8 +347,8 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
-                HclUtils.checkNumber(name, arguments.get(1));
+                HclanUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(1));
                 return Math.pow((Double)arguments.get(0), (Double)arguments.get(1));
             }
 
@@ -358,7 +358,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funRandom() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -376,7 +376,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funRound(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -385,7 +385,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.round((Double)arguments.get(0));
             }
 
@@ -395,7 +395,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funSin(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -404,7 +404,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.sin((Double)arguments.get(0));
             }
 
@@ -414,7 +414,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funSqrt(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -423,7 +423,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.sqrt((Double)arguments.get(0));
             }
 
@@ -433,7 +433,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funTan(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -442,7 +442,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.tan((Double)arguments.get(0));
             }
 
@@ -452,7 +452,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funToDegrees(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -461,7 +461,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.toDegrees((Double)arguments.get(0));
             }
 
@@ -471,7 +471,7 @@ public class HclMath extends HclClass {
     }
 
     private Object funToRadians(Token name) {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -480,7 +480,7 @@ public class HclMath extends HclClass {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                HclUtils.checkNumber(name, arguments.get(0));
+                HclanUtils.checkNumber(name, arguments.get(0));
                 return Math.toRadians((Double)arguments.get(0));
             }
 

@@ -48,7 +48,7 @@ public class GenAst {
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        writer.println("package com.harishlangs.hcl;");
+        writer.println("package com.harishlangs.hclan;");
         writer.println();
         writer.println("import java.util.List;");
         writer.println();

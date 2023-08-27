@@ -1,4 +1,4 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 public class Token {
     final TokenType type;

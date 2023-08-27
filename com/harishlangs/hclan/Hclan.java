@@ -1,4 +1,4 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,19 +9,19 @@ import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.util.List;
 
-public class Hcl {
+public class Hclan {
     private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
     public static String homePath;
     
     public static void main(String[] args) throws IOException {
-        String path = Hcl.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String path = Hclan.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         File jarFile = new File(path);
         homePath = jarFile.getParentFile().getAbsolutePath();
 
         if (args.length > 1) {
-            System.out.println("Usage: hcl [script]");
+            System.out.println("Usage: hclan [script]");
             System.exit(64);
         } else if (args.length == 1) {
             runFile(args[0]);
@@ -48,7 +48,7 @@ public class Hcl {
 
         while (true) { 
             hadError = false;
-            System.out.print("HCL .>> ");
+            System.out.print("HCLAN .>> ");
 
             String line = reader.readLine();
             if (line == null) break;

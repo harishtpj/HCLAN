@@ -1,12 +1,12 @@
-package com.harishlangs.hcl.std;
-
-import com.harishlangs.hcl.*;
+package com.harishlangs.hclan.std;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class NativeModule implements HclModule {
+import com.harishlangs.hclan.*;
+
+public class NativeModule implements HclanModule {
 
     public NativeModule() {
         // General Functions
@@ -24,7 +24,7 @@ public class NativeModule implements HclModule {
     }
 
     private Object funClock() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -42,7 +42,7 @@ public class NativeModule implements HclModule {
     }
 
     private Object funInput() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -61,7 +61,7 @@ public class NativeModule implements HclModule {
     }
 
     private Object funFmt() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return true; }
 
@@ -72,7 +72,7 @@ public class NativeModule implements HclModule {
             public Object call(Interpreter interpreter, List<Object> arguments) {
                 String fmtString = (String)arguments.remove(0);
                 Object[] argsArray = arguments.stream()
-                                              .map(obj -> HclUtils.convertNative(obj))
+                                              .map(obj -> HclanUtils.convertNative(obj))
                                               .collect(Collectors.toList())
                                               .toArray();
                 return String.format(fmtString, argsArray);
@@ -84,7 +84,7 @@ public class NativeModule implements HclModule {
     }
 
     private Object funNum() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -102,7 +102,7 @@ public class NativeModule implements HclModule {
     }
 
     private Object funStr() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -120,7 +120,7 @@ public class NativeModule implements HclModule {
     }
 
     private Object funBool() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -138,7 +138,7 @@ public class NativeModule implements HclModule {
     }
 
     private Object funExit() {
-        return new HclCallable() {
+        return new HclanCallable() {
             @Override
             public boolean isVaArg() { return false; }
 
@@ -147,7 +147,7 @@ public class NativeModule implements HclModule {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                int exitCode = (int)HclUtils.convertNative(arguments.get(0));
+                int exitCode = (int)HclanUtils.convertNative(arguments.get(0));
                 System.exit(exitCode);
                 return null;
             }
