@@ -1,9 +1,9 @@
-package com.harishlangs.hcl.std;
+package com.harishlangs.hclan.std;
 
 import java.util.HashMap;
 import java.util.Map;
 
-interface HclModule {
+interface HclanModule {
     final Map<String, Object> currMod = new HashMap<>();
     public Map<String, Object> getObjects();
 }

@@ -1,67 +1,42 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.nio.file.Files;
 import java.util.List;
 
-import org.python.core.*;
-import org.python.util.PythonInterpreter;
-
-import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.Namespace;
-
-
-public class Hcl {
+public class Hclan {
     private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
     public static String homePath;
+    
     public static void main(String[] args) throws IOException {
-        homePath = Paths.get(args[0]).getParent().toString() + File.separator;
-        ArgumentParser parser = new ArgParser().getParser();
-        try {
-            Namespace res = parser.parseArgs(Arrays.copyOfRange(args, 1, args.length));
+        String path = Hclan.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        File jarFile = new File(path);
+        homePath = jarFile.getParentFile().getAbsolutePath();
 
-            if (res.getString("file") == null) {
-                runPrompt();
-            } else {
-                runFile(res.getString("file"));
-            }
-        } catch (ArgumentParserException e) {
-            parser.handleError(e);
+        if (args.length > 1) {
+            System.out.println("Usage: hclan [script]");
+            System.exit(64);
+        } else if (args.length == 1) {
+            runFile(args[0]);
+        } else {
+            runPrompt();
         }
+
     }
 
     private static void runFile(String path) throws IOException {
-        try (PythonInterpreter pyInterp = new PythonInterpreter()) {
-            pyInterp.execfile(homePath + "lib/processor.py");
-            PyObject preprocess = pyInterp.get("preprocess");
+        byte[] bytes = Files.readAllBytes(Paths.get(path));
+        run(new String(bytes, Charset.defaultCharset()));
 
-            PyObject preprocessRes = preprocess.__call__(new PyString(path));
-            PyTuple res = (PyTuple) preprocessRes.__tojava__(PyTuple.class);
-
-            PyList imports = (PyList) res.pyget(0).__tojava__(PyList.class);
-            String proc_src = res.pyget(1).asString();
-
-            
-            for (int i = 0; i < imports.__len__(); i++) {
-                String imported = imports.__getitem__(i).asString();
-                run(imported);
-
-                if (hadError) System.exit(65);
-                if (hadRuntimeError) System.exit(70);
-            }
-            
-            run(proc_src);
-
-            if (hadError) System.exit(65);
-            if (hadRuntimeError) System.exit(70);
-        }
+        if (hadError) System.exit(65);
+        if (hadRuntimeError) System.exit(70);
     }
 
     @SuppressWarnings("unchecked")
@@ -73,7 +48,7 @@ public class Hcl {
 
         while (true) { 
             hadError = false;
-            System.out.print("HCL .>> ");
+            System.out.print("HCLAN .>> ");
 
             String line = reader.readLine();
             if (line == null) break;

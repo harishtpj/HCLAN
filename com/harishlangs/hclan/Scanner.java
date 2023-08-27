@@ -1,4 +1,4 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,7 +110,7 @@ class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                    Hcl.error(line, "Unexpected character.");
+                    Hclan.error(line, "Unexpected character.");
                 }
                 break;
         }
@@ -146,7 +146,7 @@ class Scanner {
         }
     
         if (isAtEnd()) {
-          Hcl.error(line, "Unterminated string.");
+          Hclan.error(line, "Unterminated string.");
           return;
         }
     

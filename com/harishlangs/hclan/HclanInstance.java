@@ -1,13 +1,13 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class HclInstance {
-    private HclClass klass;
+public class HclanInstance {
+    private HclanClass klass;
     private final Map<String, Object> fields = new HashMap<>();
 
-    protected HclInstance(HclClass klass) {
+    protected HclanInstance(HclanClass klass) {
         this.klass = klass;
     }
 
@@ -16,7 +16,7 @@ public class HclInstance {
           return fields.get(name.lexeme);
         }
 
-        HclFunction method = klass.findMethod(name.lexeme);
+        HclanFunction method = klass.findMethod(name.lexeme);
         if (method != null) return method.bind(this);
     
         throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");

@@ -1,4 +1,4 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.harishlangs.hcl.std.*;
+import com.harishlangs.hclan.std.*;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private static class BreakException extends RuntimeException {}
@@ -26,11 +26,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
 
     Interpreter() {
-      natImport.put("structures", HclStructures.class);
+      natImport.put("structures", HclanStructures.class);
 
       // stdImport.add("<New Imports>");
 
-      modImport.put("Math", HclMath.class);
+      modImport.put("Math", HclanMath.class);
 
       NativeModule HCLstd = new NativeModule();
       globals.importMod(HCLstd.getObjects());
@@ -42,16 +42,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
           execute(statement);
         }
       } catch (RuntimeError error) {
-        Hcl.runtimeError(error);
+        Hclan.runtimeError(error);
       }
     }
 
     String interpret(Expr expression) {
       try {
         Object value = evaluate(expression);
-        return HclUtils.stringify(value);
+        return HclanUtils.stringify(value);
       } catch (RuntimeError error) {
-        Hcl.runtimeError(error);
+        Hclan.runtimeError(error);
         return null;
       }
     }
@@ -66,9 +66,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       Object left = evaluate(expr.left);
     
       if (expr.operator.type == TokenType.OR) {
-        if (HclUtils.isTruthy(left)) return left;
+        if (HclanUtils.isTruthy(left)) return left;
       } else {
-        if (!HclUtils.isTruthy(left)) return left;
+        if (!HclanUtils.isTruthy(left)) return left;
       }
     
       return evaluate(expr.right);
@@ -78,25 +78,25 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Object visitSetExpr(Expr.Set expr) {
       Object object = evaluate(expr.object);
 
-      if (!(object instanceof HclInstance)) { 
+      if (!(object instanceof HclanInstance)) { 
         throw new RuntimeError(expr.name,"Only instances have fields.");
       }
 
       Object value = evaluate(expr.value);
-      ((HclInstance)object).set(expr.name, value);
+      ((HclanInstance)object).set(expr.name, value);
       return value;
     }
 
     @Override
     public Object visitSuperExpr(Expr.Super expr) {
       int distance = locals.get(expr);
-      HclClass superclass = (HclClass)environment.getAt(
+      HclanClass superclass = (HclanClass)environment.getAt(
           distance, "super");
 
-      HclInstance object = (HclInstance)environment.getAt(
+      HclanInstance object = (HclanInstance)environment.getAt(
         distance - 1, "self");
 
-      HclFunction method = superclass.findMethod(expr.method.lexeme);
+      HclanFunction method = superclass.findMethod(expr.method.lexeme);
 
       if (method == null)
         throw new RuntimeError(expr.method,"Undefined property '" + expr.method.lexeme + "'.");
@@ -115,9 +115,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         
         switch (expr.operator.type) {
             case BANG:
-                return !HclUtils.isTruthy(right);
+                return !HclanUtils.isTruthy(right);
             case MINUS:
-                HclUtils.checkNumberOperand(expr.operator, right);
+                HclanUtils.checkNumberOperand(expr.operator, right);
                 return -(double)right;
             default:
                 // Do nothing
@@ -182,7 +182,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       Object superclass = null;
       if (stmt.superclass != null) {
         superclass = evaluate(stmt.superclass);
-        if (!(superclass instanceof HclClass)) {
+        if (!(superclass instanceof HclanClass)) {
           throw new RuntimeError(stmt.superclass.name, "Superclass must be a class.");
         }
       }
@@ -194,22 +194,22 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         environment.define("super", superclass);
       }
 
-      Map<String, HclFunction> classMethods = new HashMap<>();
+      Map<String, HclanFunction> classMethods = new HashMap<>();
       for (Stmt.Function method : stmt.classMethods) {
-        HclFunction function = new HclFunction(method, environment, false);
+        HclanFunction function = new HclanFunction(method, environment, false);
         classMethods.put(method.name.lexeme, function);
       }
     
-      HclClass metaclass = new HclClass(null, stmt.name.lexeme + " metaclass", (HclClass)superclass, classMethods);
+      HclanClass metaclass = new HclanClass(null, stmt.name.lexeme + " metaclass", (HclanClass)superclass, classMethods);
 
 
-      Map<String, HclFunction> methods = new HashMap<>();
+      Map<String, HclanFunction> methods = new HashMap<>();
       for (Stmt.Function method : stmt.methods) {
-        HclFunction function = new HclFunction(method, environment, method.name.lexeme.equals("_init"));
+        HclanFunction function = new HclanFunction(method, environment, method.name.lexeme.equals("_init"));
         methods.put(method.name.lexeme, function);
       }
 
-      HclClass klass = new HclClass(metaclass, stmt.name.lexeme, (HclClass)superclass, methods);
+      HclanClass klass = new HclanClass(metaclass, stmt.name.lexeme, (HclanClass)superclass, methods);
 
       if (superclass != null) {
         environment = environment.enclosing;
@@ -227,14 +227,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
-      HclFunction function = new HclFunction(stmt, environment, false);
+      HclanFunction function = new HclanFunction(stmt, environment, false);
       environment.define(stmt.name.lexeme, function);
       return null;
     }
 
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
-      if (HclUtils.isTruthy(evaluate(stmt.condition))) {
+      if (HclanUtils.isTruthy(evaluate(stmt.condition))) {
         execute(stmt.thenBranch);
       } else if (stmt.elseBranch != null) {
         execute(stmt.elseBranch);
@@ -245,7 +245,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visitPrintStmt(Stmt.Print stmt) {
       Object value = evaluate(stmt.expression);
-      System.out.print(HclUtils.stringify(value));
+      System.out.print(HclanUtils.stringify(value));
       return null;
     }
 
@@ -306,19 +306,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
       switch (expr.operator.type) {
         case GREATER:
-            HclUtils.checkNumberOperands(expr.operator, left, right);
+            HclanUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left > (double)right;
         case GREATER_EQUAL:
-            HclUtils.checkNumberOperands(expr.operator, left, right);
+            HclanUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left >= (double)right;
         case LESS:
-            HclUtils.checkNumberOperands(expr.operator, left, right);
+            HclanUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left < (double)right;
         case LESS_EQUAL:
-            HclUtils.checkNumberOperands(expr.operator, left, right);
+            HclanUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left <= (double)right;
         case MINUS:
-            HclUtils.checkNumberOperands(expr.operator, left, right);
+            HclanUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left - (double)right;
         case PLUS:
 
@@ -331,17 +331,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
           }
 
           if (left instanceof String && right instanceof Double) {
-            return (String)left + HclUtils.stringify(right);
+            return (String)left + HclanUtils.stringify(right);
           }
 
           if (left instanceof Double && right instanceof String) {
-            return HclUtils.stringify(left) + (String)right;
+            return HclanUtils.stringify(left) + (String)right;
           }
 
           throw new RuntimeError(expr.operator,"Operands must be two numbers or two strings.");
 
         case SLASH:
-            HclUtils.checkNumberOperands(expr.operator, left, right);
+            HclanUtils.checkNumberOperands(expr.operator, left, right);
             return (double)left / (double)right;
         case STAR:
             if (left instanceof Double && right instanceof Double) {
@@ -349,23 +349,23 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             }
 
             if (left instanceof String && right instanceof Double) {
-              return HclUtils.repeatStr((String)left, (int)Math.floor((double)right));
+              return HclanUtils.repeatStr((String)left, (int)Math.floor((double)right));
               //return ((String)left).repeat((int)Math.floor((double)right));
             }
 
             if (left instanceof Double && right instanceof String) {
-              return HclUtils.repeatStr((String)right, (int)Math.floor((double)left));
+              return HclanUtils.repeatStr((String)right, (int)Math.floor((double)left));
               // return ((String)right).repeat((int)Math.floor((double)left));
             }
 
             throw new RuntimeError(expr.operator,"Operands must be two numbers or any one can be strings.");
         
         case CARET:
-          HclUtils.checkNumberOperands(expr.operator, left, right);
+          HclanUtils.checkNumberOperands(expr.operator, left, right);
           return Math.pow((double)left, (double)right);
 
-        case BANG_EQUAL: return !HclUtils.isEqual(left, right);
-        case EQUAL: return HclUtils.isEqual(left, right);
+        case BANG_EQUAL: return !HclanUtils.isEqual(left, right);
+        case EQUAL: return HclanUtils.isEqual(left, right);
         default:
         // Do nothing
       }
@@ -383,11 +383,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         arguments.add(evaluate(argument));
       }
 
-      if (!(callee instanceof HclCallable)) {
+      if (!(callee instanceof HclanCallable)) {
         throw new RuntimeError(expr.paren,"Can only call functions and classes.");
       }
 
-      HclCallable function = (HclCallable)callee;
+      HclanCallable function = (HclanCallable)callee;
       if ((arguments.size() != function.arity()) && !function.isVaArg()) {
         throw new RuntimeError(expr.paren, "Expected " +
             function.arity() + " arguments but got " +
@@ -399,8 +399,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Object visitGetExpr(Expr.Get expr) {
       Object object = evaluate(expr.object);
-      if (object instanceof HclInstance) {
-        return ((HclInstance) object).get(expr.name);
+      if (object instanceof HclanInstance) {
+        return ((HclanInstance) object).get(expr.name);
       }
 
       throw new RuntimeError(expr.name,
@@ -426,7 +426,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       }
 
       if (!stmt.isStd) {
-        HclUtils.importIt(stmt.keyword, (String)module + ".hcl");
+        HclanUtils.importIt(stmt.keyword, (String)module + ".hln");
         imported.add((String)module);
       } else {
         if (natImport.containsKey((String)module)) {
@@ -451,8 +451,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             ex.printStackTrace();
           }
         } else if (stdImport.contains((String)module)) {
-          String path = Hcl.homePath + File.separator + "std" + File.separator + (String)module + ".hcl";
-          HclUtils.importIt(stmt.keyword, path);
+          String path = Hclan.homePath + File.separator + "std" + File.separator + (String)module + ".hln";
+          HclanUtils.importIt(stmt.keyword, path);
           imported.add("Std " + (String)module);
         } else {
           throw new RuntimeError(stmt.keyword, 

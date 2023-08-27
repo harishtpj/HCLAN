@@ -1,4 +1,4 @@
-# Code of Conduct - HCL
+# Code of Conduct - HCLAN
 
 ## Our Pledge
 

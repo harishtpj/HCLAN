@@ -1,3 +1,0 @@
-Built-By: M.V.Harish Kumar
-Main-Class: com.harishlangs.hcl.Hcl
-Class-Path: ../lib/jython-standalone-2.7.3.jar ../lib/argparse4j-0.9.0.jar

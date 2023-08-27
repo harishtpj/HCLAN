@@ -1,4 +1,4 @@
-package com.harishlangs.hcl;
+package com.harishlangs.hclan;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +47,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
       if (stmt.superclass != null &&
         stmt.name.lexeme.equals(stmt.superclass.name.lexeme)) {
-        Hcl.error(stmt.superclass.name,"A class can't inherit from itself.");
+        Hclan.error(stmt.superclass.name,"A class can't inherit from itself.");
       }
 
       if (stmt.superclass != null) {
@@ -123,12 +123,12 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitReturnStmt(Stmt.Return stmt) {
       if (currentFunction == FunctionType.NONE) {
-        Hcl.error(stmt.keyword, "Can't return from top-level code.");
+        Hclan.error(stmt.keyword, "Can't return from top-level code.");
       }
 
       if (stmt.value != null) {
         if (currentFunction == FunctionType.INITIALIZER) {
-          Hcl.error(stmt.keyword,"Can't return a value from an initializer.");
+          Hclan.error(stmt.keyword,"Can't return a value from an initializer.");
         }
 
         resolve(stmt.value);
@@ -212,9 +212,9 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitSuperExpr(Expr.Super expr) {
       if (currentClass == ClassType.NONE) {
-        Hcl.error(expr.keyword, "Can't use 'super' outside of a class.");
+        Hclan.error(expr.keyword, "Can't use 'super' outside of a class.");
       } else if (currentClass != ClassType.SUBCLASS) {
-        Hcl.error(expr.keyword, "Can't use 'super' in a class with no superclass.");
+        Hclan.error(expr.keyword, "Can't use 'super' in a class with no superclass.");
       }
 
       resolveLocal(expr, expr.keyword);
@@ -224,7 +224,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitSelfExpr(Expr.Self expr) {
       if (currentClass == ClassType.NONE) {
-        Hcl.error(expr.keyword, "Can't use 'this' outside of a class.");
+        Hclan.error(expr.keyword, "Can't use 'this' outside of a class.");
         return null;
       }
 
@@ -241,7 +241,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     @Override
     public Void visitVariableExpr(Expr.Variable expr) {
       if (!scopes.isEmpty() && scopes.peek().get(expr.name.lexeme) == Boolean.FALSE) {
-        Hcl.error(expr.name,
+        Hclan.error(expr.name,
             "Can't read local variable in its own initializer.");
       }
 
@@ -295,7 +295,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     
         Map<String, Boolean> scope = scopes.peek();
         if (scope.containsKey(name.lexeme)) {
-          Hcl.error(name,
+          Hclan.error(name,
               "Already a variable with this name in this scope.");
         }
         scope.put(name.lexeme, false);
