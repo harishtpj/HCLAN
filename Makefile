@@ -2,18 +2,17 @@
 PACKAGE = com.harishlangs.
 SRC = com\harishlangs\hcl
 NAME = Hcl
-CP = .;lib\argparse4j-0.9.0.jar;lib\jython-standalone-2.7.3.jar
 JAR = HCL.jar
 
 all: compile run
 
 run: compile
 	@echo "--> Running HCL"
-	@java -cp $(CP) $(PACKAGE)hcl.$(NAME) .\\ $(ARGS)
+	@java $(PACKAGE)hcl.$(NAME) .\\ $(ARGS)
 
 compile:
 	@echo "--> Building HCL Lang"
-	@javac -cp $(CP) $(SRC)\\Hcl.java
+	@javac $(SRC)\\Hcl.java
 
 genast:
 	@echo "--> Generating AST Tree"
@@ -22,14 +21,18 @@ genast:
 
 clean:
 	@echo "--> Cleaning Directory"
-	@del /s /q *.class
+	@del /s /q *.class *.msi
 	@echo "--> Cleaned Directory"
 
 export: clean compile
 	@echo "--> Exporting Jar"
 	@if not exist export mkdir export
-	@if not exist export\\bin mkdir export\\bin
-	@if not exist export\\lib mkdir export\\lib
 	@jar cfm $(JAR) $(SRC)\\manifest.txt $(SRC)\\*.class $(SRC)\\std\\*.class
-	@move $(JAR) export\\bin
-	@xcopy /y lib export\\lib
+	@move $(JAR) export
+
+installer: export
+	@echo "--> Creating MSI installer"
+	@jpackage --input export --name HCL --main-jar HCL.jar --main-class com.harishlangs.hcl.Hcl \
+				--type msi --win-dir-chooser --win-per-user-install --win-console --license-file LICENSE \
+				--vendor "Harish Kumar" --description "The HCL Language" \
+				--copyright "Copyright (c) 2023, Harish Kumar"
